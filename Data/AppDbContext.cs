@@ -6,5 +6,25 @@ namespace cloud.Data {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<PhoneVerification> PhoneVerifications { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PhoneVerification>()
+                .ToTable("phone_verifications")
+            ;
+
+            modelBuilder.Entity<User>()
+                .ToTable("users")
+                .HasIndex(u => u.email)
+                .IsUnique()
+            ;
+            modelBuilder.Entity<User>()
+                .ToTable("users")
+                .HasIndex(u => u.phone)
+                .IsUnique()
+            ;
+        }
     }
 }

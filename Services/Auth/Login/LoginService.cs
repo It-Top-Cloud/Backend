@@ -19,17 +19,16 @@ namespace cloud.Services.Auth.Login {
             this.jwt = jwt;
         }
 
-        public async Task<LoginResponse> UsernameLoginAsync(UsernameLoginRequest request) {
-            var user = await repository.GetUserByUsernameAsync(request.username); // опционально, для безопастности можно удалить
+        public async Task<LoginResponse> PhoneLoginAsync(PhoneLoginRequest request) {
+            var user = await repository.GetUserByPhoneAsync(request.phone);
             if (user == null) {
                 throw new NotFoundException("Пользователь не найден");
             }
 
             if (!Crypto.Verify(request.password, user.password)) {
-                throw new UnauthorizedAccessException("Неверное имя пользователя или пароль");
+                throw new UnauthorizedAccessException("Неверный номер телефона или пароль");
             }
 
-            // обновляем поле updated_at 
             user.updated_at = DateTime.UtcNow;
             user = await repository.UpdateUserAsync(user);
 

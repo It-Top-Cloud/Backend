@@ -1,0 +1,36 @@
+services:
+  cloud:
+    build: .
+    container_name: cloud
+    ports:
+      - "127.0.0.1:5119:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - DefaultConnection=Server=sqlserver,1433;Database=cloud;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=true;MultipleActiveResultSets=true;
+      # - ASPNETCORE_ENVIRONMENT=Development
+      - JWTkey=${JWTkey}
+      - SMSRU_APIKEY=${SMSRU_APIKEY}
+    networks:
+      - cloud-network
+    restart: unless-stopped
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: cloud-sqlserver
+    environment:
+      SA_PASSWORD: "${SQL_PASSWORD}" 
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+    volumes:
+      - cloud_sql_data:/var/opt/mssql
+    networks:
+      - cloud-network
+    restart: unless-stopped
+    
+volumes:
+  cloud_sql_data:
+
+networks:
+  cloud-network:
+    driver: bridge

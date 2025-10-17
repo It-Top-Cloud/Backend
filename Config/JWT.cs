@@ -3,25 +3,32 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
 using cloud.Enums;
+using cloud.Services.JWT;
 
 namespace cloud.Config {
     public static partial class Config {
         public static WebApplicationBuilder AppConfigureJWT(this WebApplicationBuilder builder) {
-            Env.Load();
+            string? jwtKey;
 
-            var jwtKey = Environment.GetEnvironmentVariable("JWTKey");
-            if (string.IsNullOrWhiteSpace(jwtKey)) {
-                Console.WriteLine("JWT ключ не указан\n" +
-                    "Пример смотрите в файле .env.example\n" +
-                    "Создать ключ(если есть openssl): openssl rand -base64 32");
-                Console.ReadKey();
-                Environment.Exit(-1);
+            if (builder.Environment.IsDevelopment()) {
+                Env.Load();
+                jwtKey = Environment.GetEnvironmentVariable("JWTKey");
+                if (string.IsNullOrWhiteSpace(jwtKey)) {
+                    Console.WriteLine("JWT ключ не указан\n" +
+                        "Пример смотрите в файле .env.example\n" +
+                        "Создать ключ(если есть openssl): openssl rand -base64 32");
+                    Environment.Exit(-1);
+                }
+            } else {
+                jwtKey = builder.Configuration["JWTKey"];
             }
+
             var jwtLifetimeMinutes = int.Parse(Environment.GetEnvironmentVariable("JWTLifetimeMinutes") ?? "30");
 
             builder.Configuration["JWT:Key"] = jwtKey;
             builder.Configuration["JWT:LifetimeMinutes"] = jwtLifetimeMinutes.ToString();
 
+            builder.Services.AddSingleton<IJWTService, JWTService>();
             // Добавляем политики для [Authorize]
             builder.AppConfigurePolicies();
 

@@ -9,12 +9,24 @@ namespace cloud.Models {
         public Guid id { get; set; }
 
 
-        [Column(TypeName = "nvarchar(16)")]
-        public string username { get; set; }
+        [Column(TypeName = "nvarchar(30)")]
+        public string fname { get; set; }
 
 
-        [Column(TypeName = "nvarchar(255)")]
+        [Column(TypeName = "nvarchar(30)")]
+        public string? sname { get; set; }
+
+
+        [Column(TypeName = "nvarchar(30)")]
+        public string? lname { get; set; }
+
+
+        [Column(TypeName = "nvarchar(100)")]
         public string email { get; set; }
+
+
+        [Column(TypeName = "varchar(11)")]
+        public string phone { get; set; }
 
 
         [Column(TypeName = "nvarchar(255)")]
