@@ -5,6 +5,10 @@
             app.UseAuthorization();
             app.MapControllers();
 
+            app.UseWebSockets(new WebSocketOptions {
+                KeepAliveInterval = TimeSpan.FromMinutes(10)
+            });
+
             app.Run();
 
             return app;
