@@ -29,7 +29,6 @@ namespace cloud.Services.Auth.Login {
                 throw new UnauthorizedAccessException("Неверный номер телефона или пароль");
             }
 
-            user.updated_at = DateTime.UtcNow;
             user = await repository.UpdateUserAsync(user);
 
             var response = mapper.Map<LoginResponse>(user);

@@ -27,14 +27,12 @@ namespace cloud.Controllers.Auth.Verify.Phone {
 
         [HttpGet]
         public async Task Verify([FromQuery] PhoneVerificationRequest request) {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid || !HttpContext.WebSockets.IsWebSocketRequest) {
                 return;
             }
 
-            if (HttpContext.WebSockets.IsWebSocketRequest) {
-                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                await HandleConnection(webSocket, request);
-            }
+            var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            await HandleConnection(webSocket, request);
         }
 
         private async Task HandleConnection(WebSocket webSocket, PhoneVerificationRequest request) {

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using cloud.Config;
 
 namespace cloud.DTO.Requests.Auth {
     public class RegisterRequest {
@@ -10,8 +11,8 @@ namespace cloud.DTO.Requests.Auth {
 
         public string? lname { get; set; }
 
-        [Required(ErrorMessage = "Поле phone обязательно")]
-        [RegularExpression(@"^7\d{10}$", ErrorMessage = "Не верный формат номера, пример: 74999999999")]
+        [Required(ErrorMessage = "Поле \"телефон\" обязательно")]
+        [RegularExpression(RegExp.Phone, ErrorMessage = "Не верный формат номера, пример: 74999999999")]
         public string phone { get; set; }
 
         [Required(ErrorMessage = "Поле email обязательно")]

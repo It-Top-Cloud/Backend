@@ -6,7 +6,7 @@ namespace cloud.Models {
     public class User {
         [Key]
         [Column(TypeName = "uniqueidentifier")]
-        public Guid id { get; set; }
+        public Guid id { get; set; } = Guid.NewGuid();
 
 
         [Column(TypeName = "nvarchar(30)")]

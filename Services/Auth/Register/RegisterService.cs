@@ -34,9 +34,7 @@ namespace cloud.Services.Auth.Register {
             var verificationCheck = await repository.GetPhoneVerificationAsync(request.phone);
             if (verificationCheck == null) {
                 throw new InvalidActionException("Номер телефона не верифицирован");
-            } else if (verificationCheck.updated_at + TimeSpan.FromMinutes(10) < DateTime.UtcNow ) {
-                throw new InvalidActionException("Срок верификации истек, подтвердите номера телефона заного");
-            }
+            } 
 
             var user = mapper.Map<User>(request);
             user.password = Crypto.HashPassword(request.password, workFactor: 12);

@@ -32,6 +32,7 @@ namespace cloud.Repositories.Auth {
         }
 
         public async Task<User> UpdateUserAsync(User user) {
+            user.updated_at = DateTime.UtcNow;
             context.Users.Update(user);
             await context.SaveChangesAsync();
             return user;

@@ -9,6 +9,7 @@ namespace cloud.Config {
                 var smsKey = Environment.GetEnvironmentVariable("SMSRU_APIKEY");
                 if (string.IsNullOrWhiteSpace(smsKey)) {
                     Console.WriteLine("Отсутствует SMSRU_APIKEY верификация номеров телефона не возможна");
+                    Environment.Exit(-1);
                 }
                 builder.Configuration["SMSRU_APIKEY"] = smsKey;
             }

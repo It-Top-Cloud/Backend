@@ -6,7 +6,6 @@ using cloud.Models;
 namespace cloud.Profiles {
     public class AuthProfile : Profile {
         public AuthProfile() {
-            CreateMap<PhoneLoginRequest, User>();
             CreateMap<RegisterRequest, User>();
             CreateMap<User, LoginResponse>();
         }
