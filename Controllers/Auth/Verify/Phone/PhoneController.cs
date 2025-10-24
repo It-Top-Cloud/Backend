@@ -1,15 +1,8 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.WebSockets;
-using System.Text;
+﻿using System.Net.WebSockets;
 using System.Text.Json;
 using cloud.DTO.Requests.Auth.Verify;
 using cloud.Services.Auth;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Sprache;
 
 namespace cloud.Controllers.Auth.Verify.Phone {
     [ApiController]

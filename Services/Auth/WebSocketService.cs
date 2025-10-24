@@ -1,11 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
-using cloud.Data;
 using cloud.DTO.Requests.Auth.Verify;
 using cloud.Enums;
 using cloud.Models;
 using cloud.Repositories.Verify;
-using Microsoft.EntityFrameworkCore;
 
 namespace cloud.Services.Auth {
     public class WebSocketService {

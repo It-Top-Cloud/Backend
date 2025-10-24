@@ -11,7 +11,7 @@ namespace cloud.DTO.Requests.Auth {
 
         public string? lname { get; set; }
 
-        [Required(ErrorMessage = "Поле \"телефон\" обязательно")]
+        [Required(ErrorMessage = "Поле phone обязательно")]
         [RegularExpression(RegExp.Phone, ErrorMessage = "Не верный формат номера, пример: 74999999999")]
         public string phone { get; set; }
 
