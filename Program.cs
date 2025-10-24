@@ -6,6 +6,8 @@ namespace cloud {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllers();
 
+            builder.AppInjectSecrets();
+
             // Добавляем SQL Server из .ev
             builder.AppConfigureSQLServer();
 

@@ -21,15 +21,20 @@ namespace cloud.Services.Auth.Register {
         }
 
         public async Task<LoginResponse> RegisterUserAsync(RegisterRequest request) {
-            var usernameCheck = await repository.GetUserByUsernameAsync(request.username);
-            if (usernameCheck != null) {
-                throw new InvalidActionException("Пользователь с таким именем уже существует");
+            var phoneCheck = await repository.GetUserByPhoneAsync(request.phone);
+            if (phoneCheck != null) {
+                throw new InvalidActionException("Пользователь с таким номером телефона уже существует");
             }
 
             var emailCheck = await repository.GetUserByEmailAsync(request.email);
             if (emailCheck != null) {
                 throw new InvalidActionException("Пользователь с такой почтой уже существует");
             }
+
+            var verificationCheck = await repository.GetPhoneVerificationAsync(request.phone);
+            if (verificationCheck == null) {
+                throw new InvalidActionException("Номер телефона не верифицирован");
+            } 
 
             var user = mapper.Map<User>(request);
             user.password = Crypto.HashPassword(request.password, workFactor: 12);

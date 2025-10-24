@@ -15,10 +15,10 @@ namespace cloud.Controllers.Auth {
         }
 
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Login(UsernameLoginRequest request) {
+        public async Task<ActionResult<LoginResponse>> Login(PhoneLoginRequest request) {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var response = await service.UsernameLoginAsync(request);
+            var response = await service.PhoneLoginAsync(request);
             return Ok(response);
         }
     }

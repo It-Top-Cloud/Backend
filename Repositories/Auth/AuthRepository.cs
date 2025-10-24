@@ -1,4 +1,5 @@
 ﻿using cloud.Data;
+using cloud.Enums;
 using cloud.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,12 +10,19 @@ namespace cloud.Repositories.Auth {
             this.context = context;
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username) {
-            return await context.Users.FirstOrDefaultAsync(u => u.username == username);
+        public async Task<User?> GetUserByPhoneAsync(string phone) {
+            return await context.Users.FirstOrDefaultAsync(u => u.phone == phone);
         }
 
         public async Task<User?> GetUserByEmailAsync(string email) {
             return await context.Users.FirstOrDefaultAsync(u => u.email == email);
+        }
+
+        public async Task<PhoneVerification?> GetPhoneVerificationAsync(string phone) {
+            return await context.PhoneVerifications.FirstOrDefaultAsync(v => 
+                v.phone == phone && 
+                v.status == (int)VerificationEnum.Success
+            );
         }
 
         public async Task<User> CreateUserAsync(User user) {
@@ -24,6 +32,7 @@ namespace cloud.Repositories.Auth {
         }
 
         public async Task<User> UpdateUserAsync(User user) {
+            user.updated_at = DateTime.UtcNow;
             context.Users.Update(user);
             await context.SaveChangesAsync();
             return user;
