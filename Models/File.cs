@@ -5,7 +5,7 @@ namespace cloud.Models {
     public class File {
         [Key]
         [Column(TypeName = "uniqueidentifier")]
-        public Guid id { get; set; }
+        public Guid id { get; set; } = Guid.NewGuid();
 
 
         [Column(TypeName = "uniqueidentifier")]
@@ -25,7 +25,7 @@ namespace cloud.Models {
 
 
         [Column(TypeName = "nvarchar(255)")]
-        public string path { get; set; }
+        public string? path { get; set; }
 
 
         [Column(TypeName = "bigint")]
@@ -33,7 +33,7 @@ namespace cloud.Models {
 
 
         [Column(TypeName = "int")]
-        public int status { get; set; }
+        public int status { get; set; } = 1;
 
 
         [Column(TypeName = "datetime")]

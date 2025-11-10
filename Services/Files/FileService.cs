@@ -1,0 +1,78 @@
+﻿using AutoMapper;
+using cloud.DTO.Responses.Files;
+using cloud.Exceptions;
+using cloud.Repositories.Files;
+using cloud.Services.Files.FileWorkers.Uploader;
+
+namespace cloud.Services.Files {
+    public class FileService : IFileService {
+        private readonly IFileRepository repository;
+        private readonly IFileUploaderService uploader;
+        private readonly IMapper mapper;
+
+        public FileService(IFileRepository repository, IFileUploaderService uploader, IMapper mapper) {
+            this.repository = repository;
+            this.uploader = uploader;
+            this.mapper = mapper;
+        }
+
+        public async Task<List<FileResponse>> GetUserFilesAsync(string userId) {
+            return new List<FileResponse>();
+        }
+
+        public async Task<List<FileResponse>> UploadFilesAsync(string userId, IFormFileCollection files) {
+            if (repository.HasStorageLimit(userId, out long available)) {
+                long uploadSize = 0;
+                foreach (var file in files) {
+                    uploadSize += file.Length;
+                }
+
+                if (uploadSize > available) {
+                    throw new InvalidActionException("Загруженные файлы превышают лимит");
+                }
+            }
+
+            foreach (var file in files) {
+                if (!ValidateFileName(file.FileName)) {
+                    throw new InvalidActionException($"Имя файла {file.FileName} содержит запрещенные символы");
+                }
+            }
+
+            var result = new List<FileResponse>();
+            foreach (var file in files) {
+                var fileRecord = new Models.File {
+                    user_id = Guid.Parse(userId),
+                    name = Path.GetFileName(file.FileName),
+                    extension = Path.GetExtension(file.FileName),
+                    path = Path.GetDirectoryName(file.FileName),
+                    bytes = file.Length,
+                };
+                await repository.CreateFileAsync(fileRecord);
+                await uploader.StoreFileAsync(userId, file);
+                result.Add(mapper.Map<FileResponse>(fileRecord));
+            }
+
+            return result;
+        }
+
+        private bool ValidateFileName(string fileName) {
+            if (string.IsNullOrWhiteSpace(fileName)) {
+                return false;
+            }
+
+            if (Path.IsPathRooted(fileName) || fileName.Contains("..") || fileName.Contains("\\")) {
+                return false;
+            }
+            
+            var invalidChars = Path.GetInvalidFileNameChars().Except(['/']);
+            if (fileName.Any(c => invalidChars.Contains(c))) {
+                return false;
+            }
+            
+            if (fileName.Length > 255) {
+                return false;
+            }
+            return true;
+        }
+    }
+}

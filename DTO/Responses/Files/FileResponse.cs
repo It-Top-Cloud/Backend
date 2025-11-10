@@ -4,5 +4,6 @@
         public Guid user_id { get; set; }
         public string name { get; set; }
         public string extension { get; set; }
+        public string path { get; set; }
     }
 }
