@@ -1,7 +1,6 @@
-﻿using cloud.Services.Files.FileWorkers;
-
-namespace cloud.Services.Files.FileWorkers.Uploader {
+﻿namespace cloud.Services.Files.FileWorkers.Uploader {
     public interface IFileUploaderService : IFileWorker {
+        bool FileExists(string userId, string fileName);
         Task StoreFileAsync(string userId, IFormFile file);
     }
 }

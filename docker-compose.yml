@@ -13,8 +13,12 @@ services:
       # - ASPNETCORE_ENVIRONMENT=Development
       - JWTkey=${JWTkey}
       - SMSRU_APIKEY=${SMSRU_APIKEY}
+      - StorageDir=/app/storage
+      - FreeStorageLimitGB=${FreeStorageLimitGB}
     networks:
       - cloud-network
+    volumes:
+      - storage:${StorageDir}
     restart: unless-stopped
 
   sqlserver:
@@ -25,13 +29,14 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_PID: Express
     volumes:
-      - cloud_sql_data:/var/opt/mssql
+      - sql_data:/var/opt/mssql
     networks:
       - cloud-network
     restart: unless-stopped
     
 volumes:
-  cloud_sql_data:
+  storage:
+  sql_data:
 
 networks:
   cloud-network:

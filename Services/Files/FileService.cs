@@ -17,7 +17,8 @@ namespace cloud.Services.Files {
         }
 
         public async Task<List<FileResponse>> GetUserFilesAsync(string userId) {
-            return new List<FileResponse>();
+            var files = await repository.GetUserFilesAsync(userId);
+            return mapper.Map<List<FileResponse>>(files);
         }
 
         public async Task<List<FileResponse>> UploadFilesAsync(string userId, IFormFileCollection files) {
@@ -35,6 +36,8 @@ namespace cloud.Services.Files {
             foreach (var file in files) {
                 if (!ValidateFileName(file.FileName)) {
                     throw new InvalidActionException($"Имя файла {file.FileName} содержит запрещенные символы");
+                } else if (uploader.FileExists(userId, file.FileName)) {
+                    throw new InvalidActionException($"Файл {file.FileName} уже существует");
                 }
             }
 

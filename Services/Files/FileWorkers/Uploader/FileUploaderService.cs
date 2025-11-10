@@ -10,6 +10,17 @@
             }
         }
 
+        public bool FileExists(string userId, string fileName) {
+            string userPath = Path.Combine(FileDir, userId);
+            string fullPath = Path.Combine(userPath, fileName);
+
+            if (File.Exists(fullPath)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         public async Task StoreFileAsync(string userId, IFormFile file) {
             string userPath = Path.Combine(FileDir, userId);
             Directory.CreateDirectory(userPath);
