@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using cloud.DTO.Requests.Files;
 using cloud.DTO.Responses.Files;
 using cloud.Exceptions;
 using cloud.Repositories.Files;
@@ -56,6 +57,21 @@ namespace cloud.Services.Files {
             }
 
             return result;
+        }
+
+        public async Task RemoveFileAsync(string userId, RemoveFileRequest request) {
+            var file = await repository.GetFileByIdAsync(request.id);
+            if (file == null) {
+                throw new NotFoundException("Файл не найден");
+            }
+
+            if (file.user_id != Guid.Parse(userId)) {
+                throw new AccessDeniedException("Доступ запрещен");
+            }
+
+            await repository.RemoveFileAsync(file);
+            string path = string.IsNullOrWhiteSpace(file.path) ? file.name : Path.Combine(file.path, file.name);
+            await uploader.RemoveFileAsync(userId, path);
         }
 
         private bool ValidateFileName(string fileName) {

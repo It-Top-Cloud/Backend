@@ -16,6 +16,10 @@ namespace cloud.Repositories.Files {
             return await context.Files.Where(f => f.user_id == Guid.Parse(userId)).ToListAsync();
         }
 
+        public async Task<Models.File?> GetFileByIdAsync(string id) {
+            return await context.Files.FirstOrDefaultAsync(f => f.id == Guid.Parse(id));
+        }
+
         public bool HasStorageLimit(string userId, out long available) {
             available = -1L;
 

@@ -12,10 +12,10 @@ namespace cloud.Config {
         public static WebApplicationBuilder AppRegisterServices(this WebApplicationBuilder builder) {
             builder.Services.AddHttpClient();
             builder.Services.Configure<FormOptions>(options =>
-                options.MultipartBodyLengthLimit = 100L * (1L << 30)
+                options.MultipartBodyLengthLimit = 30L * (1L << 30)
             );
             builder.Services.Configure<KestrelServerOptions>(options =>
-                options.Limits.MaxRequestBodySize = 100L * (1L << 30)
+                options.Limits.MaxRequestBodySize = 30L * (1L << 30)
             );
             builder.Services.AddSingleton<WebSocketService>();
 

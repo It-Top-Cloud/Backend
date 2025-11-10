@@ -35,5 +35,18 @@
 
             await file.CopyToAsync(fs);
         }
+
+        public async Task RemoveFileAsync(string userId, string fileName) {
+            string userPath = Path.Combine(FileDir, userId);
+            Directory.CreateDirectory(userPath);
+
+            string fullPath = Path.Combine(userPath, fileName);
+            string? directoryPath = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrWhiteSpace(directoryPath)) {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            await Task.Run(() => File.Delete(fullPath));
+        }
     }
 }

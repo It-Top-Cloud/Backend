@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using cloud.DTO.Requests.Files;
 using cloud.DTO.Responses.Files;
 using cloud.Services.Files;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,14 @@ namespace cloud.Controllers.Files {
 
             var files = await service.GetUserFilesAsync(userId);
             return Ok(files);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> RemoveFile(RemoveFileRequest request) {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            await service.RemoveFileAsync(userId, request);
+            return Ok();
         }
     }
 }
