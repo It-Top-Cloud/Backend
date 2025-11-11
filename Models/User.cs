@@ -21,10 +21,6 @@ namespace cloud.Models {
         public string? lname { get; set; }
 
 
-        [Column(TypeName = "nvarchar(100)")]
-        public string email { get; set; }
-
-
         [Column(TypeName = "varchar(11)")]
         public string phone { get; set; }
 

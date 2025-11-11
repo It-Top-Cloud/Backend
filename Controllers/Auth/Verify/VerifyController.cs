@@ -4,15 +4,15 @@ using cloud.DTO.Requests.Auth.Verify;
 using cloud.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
-namespace cloud.Controllers.Auth.Verify.Phone {
+namespace cloud.Controllers.Auth.Verify {
     [ApiController]
-    [Route("api/v1/auth/verify/[controller]")]
-    public class PhoneController : Controller {
+    [Route("api/v1/auth/[controller]")]
+    public class VerifyController : Controller {
         private readonly WebSocketService service;
         private readonly HttpClient client;
         private readonly IConfiguration configuration;
 
-        public PhoneController(WebSocketService service, HttpClient client, IConfiguration configuration) {
+        public VerifyController(WebSocketService service, HttpClient client, IConfiguration configuration) {
             this.service = service;
             this.client = client;
             this.configuration = configuration;
@@ -36,10 +36,12 @@ namespace cloud.Controllers.Auth.Verify.Phone {
                 if (json.RootElement.TryGetProperty("check_id", out var id)) {
                     await service.AddSocket(id.ToString(), request, webSocket);
                     await KeepConnectionAlive(webSocket);
-                } else {
+                }
+                else {
                     await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Internal server error", CancellationToken.None);
                 }
-            } catch {
+            }
+            catch {
                 webSocket.Abort();
             }
         }
@@ -53,7 +55,8 @@ namespace cloud.Controllers.Auth.Verify.Phone {
                         await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing connection", CancellationToken.None);
                         break;
                     }
-                } catch {
+                }
+                catch {
                     break;
                 }
             }

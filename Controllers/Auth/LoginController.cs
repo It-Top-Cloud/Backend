@@ -15,7 +15,7 @@ namespace cloud.Controllers.Auth {
         }
 
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Login(PhoneLoginRequest request) {
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request) {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var response = await service.PhoneLoginAsync(request);
