@@ -19,7 +19,7 @@ namespace cloud.Services.Auth.Login {
             this.jwt = jwt;
         }
 
-        public async Task<LoginResponse> PhoneLoginAsync(PhoneLoginRequest request) {
+        public async Task<LoginResponse> PhoneLoginAsync(LoginRequest request) {
             var user = await repository.GetUserByPhoneAsync(request.phone);
             if (user == null) {
                 throw new NotFoundException("Пользователь не найден");

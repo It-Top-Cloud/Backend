@@ -1,7 +1,7 @@
 ﻿using cloud.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 
-namespace cloud.Controllers.Auth.Verify.Phone {
+namespace cloud.Controllers.Auth.Verify {
     [ApiController]
     [Route("api/v1/auth/verify/phone/[controller]")]
     public class ResultController : Controller {
@@ -21,7 +21,7 @@ namespace cloud.Controllers.Auth.Verify.Phone {
             if (parts[0] == "callcheck_status" && parts[2] == "401") {
                 await service.VerifyAsync(parts[1]);
             }
-            
+
             await HttpContext.Response.WriteAsync("100");
         }
     }
