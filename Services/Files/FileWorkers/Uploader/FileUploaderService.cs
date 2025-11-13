@@ -31,7 +31,7 @@
                 Directory.CreateDirectory(directoryPath);
             }
 
-            FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.Write);
+            using FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.Write);
 
             await file.CopyToAsync(fs);
         }

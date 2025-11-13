@@ -3,17 +3,20 @@ using cloud.DTO.Requests.Files;
 using cloud.DTO.Responses.Files;
 using cloud.Exceptions;
 using cloud.Repositories.Files;
+using cloud.Services.Files.FileWorkers.Browser;
 using cloud.Services.Files.FileWorkers.Uploader;
 
 namespace cloud.Services.Files {
     public class FileService : IFileService {
         private readonly IFileRepository repository;
         private readonly IFileUploaderService uploader;
+        private readonly IFileBrowserService browser;
         private readonly IMapper mapper;
 
-        public FileService(IFileRepository repository, IFileUploaderService uploader, IMapper mapper) {
+        public FileService(IFileRepository repository, IFileUploaderService uploader, IFileBrowserService browser, IMapper mapper) {
             this.repository = repository;
             this.uploader = uploader;
+            this.browser = browser;
             this.mapper = mapper;
         }
 
@@ -57,6 +60,27 @@ namespace cloud.Services.Files {
             }
 
             return result;
+        }
+
+        public async Task<FileStream> GetFileStream(string userId, DownloadFileRequest request) {
+            var file = await repository.GetFileByIdAsync(request.id);
+            if (file == null) {
+                throw new NotFoundException("Файл не найден");
+            }
+
+            if (file.user_id != Guid.Parse(userId)) {
+                throw new AccessDeniedException("Доступ запрещен");
+            }
+            /*
+             * изменить проверку в будущем
+             * у файлов будет возможность их разшаривать
+             * или сделать файл публичным
+             * 
+             * TODO: установить значение status у объекта File
+             * на Enum - FileAccessibilityEnum
+            */
+
+            return browser.GetFileStream(userId, file);
         }
 
         public async Task RemoveFileAsync(string userId, RemoveFileRequest request) {

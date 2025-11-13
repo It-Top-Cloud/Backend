@@ -2,6 +2,7 @@
 using cloud.Services.Auth.Login;
 using cloud.Services.Auth.Register;
 using cloud.Services.Files;
+using cloud.Services.Files.FileWorkers.Browser;
 using cloud.Services.Files.FileWorkers.Uploader;
 using cloud.Services.JWT;
 using Microsoft.AspNetCore.Http.Features;
@@ -24,6 +25,7 @@ namespace cloud.Config {
 
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddSingleton<IFileUploaderService, FileUploaderService>();
+            builder.Services.AddSingleton<IFileBrowserService, FileBrowserService>();
 
             return builder;
         }

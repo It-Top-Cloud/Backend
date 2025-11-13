@@ -3,7 +3,7 @@ name: cloud
 services:
   cloud:
     build: .
-    container_name: app
+    container_name: cloud-app
     ports:
       - "127.0.0.1:5119:8080"
     depends_on:
@@ -23,7 +23,7 @@ services:
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
+    container_name: cloud-sqlserver
     environment:
       SA_PASSWORD: "${SQL_PASSWORD}" 
       ACCEPT_EULA: "Y"
