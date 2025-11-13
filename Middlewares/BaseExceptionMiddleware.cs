@@ -19,9 +19,11 @@ namespace cloud.Middlewares {
                 await ExceptionHandler.HandleExceptionAsync(context, 400, ex.Message);
             } catch (UnauthorizedAccessException ex) {
                 await ExceptionHandler.HandleExceptionAsync(context, 401, ex.Message);
+            } catch (AccessDeniedException ex) {
+                await ExceptionHandler.HandleExceptionAsync(context, 403, ex.Message);
             } catch (Exception ex) {
                 await ExceptionHandler.HandleExceptionAsync(context, 500, ex.Message);
             }
         }
     }
-   }
+}
