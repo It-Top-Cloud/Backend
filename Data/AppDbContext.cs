@@ -18,11 +18,6 @@ namespace cloud.Data {
 
             modelBuilder.Entity<User>()
                 .ToTable("users")
-                .HasIndex(u => u.email)
-                .IsUnique()
-            ;
-            modelBuilder.Entity<User>()
-                .ToTable("users")
                 .HasIndex(u => u.phone)
                 .IsUnique()
             ;

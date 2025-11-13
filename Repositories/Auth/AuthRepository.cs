@@ -14,10 +14,6 @@ namespace cloud.Repositories.Auth {
             return await context.Users.FirstOrDefaultAsync(u => u.phone == phone);
         }
 
-        public async Task<User?> GetUserByEmailAsync(string email) {
-            return await context.Users.FirstOrDefaultAsync(u => u.email == email);
-        }
-
         public async Task<PhoneVerification?> GetPhoneVerificationAsync(string phone) {
             return await context.PhoneVerifications.FirstOrDefaultAsync(v => 
                 v.phone == phone && 
