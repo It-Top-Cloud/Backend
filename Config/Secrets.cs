@@ -14,7 +14,7 @@ namespace cloud.Config {
                 builder.Configuration["SMSRU_APIKEY"] = smsKey;
 
                 var freeStorage = Environment.GetEnvironmentVariable("FreeStorageLimitGB");
-                if (string.IsNullOrWhiteSpace(smsKey)) {
+                if (string.IsNullOrWhiteSpace(freeStorage)) {
                     Console.WriteLine("Отсутствует FreeStorageLimitGB");
                     Environment.Exit(-1);
                 }

@@ -1,5 +1,7 @@
-﻿using cloud.Data;
+﻿using cloud.Config;
+using cloud.Data;
 using cloud.Enums;
+using cloud.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace cloud.Repositories.Files {
@@ -24,14 +26,14 @@ namespace cloud.Repositories.Files {
             available = -1L;
 
             var user = context.Users.FirstOrDefault(u => u.id == Guid.Parse(userId))!;
-            if ((user.role & (int)RolesEnum.Unlimited) == (int)RolesEnum.Unlimited) {
+            if (HasPermission(user, RolesEnum.Unlimited)) {
                 return false;
             }
 
             string freeGb = configuration["FreeStorageLimitGB"]!;
 
             long.TryParse(freeGb, out long free);
-            available = free * (1L << 30);
+            available = free * Constants.OneGbBytes;
 
             var usedSpace = context.Files
                 .Where(f => f.user_id == user.id)
@@ -51,6 +53,15 @@ namespace cloud.Repositories.Files {
         public async Task RemoveFileAsync(Models.File file) {
             context.Files.Remove(file);
             await context.SaveChangesAsync();
+        }
+
+        private bool HasPermission(User user, RolesEnum role) {
+            int intFlag = (int)role;
+            if ((user.role & intFlag) != intFlag) {
+                return false;
+            }
+
+            return true;
         }
     }
 }

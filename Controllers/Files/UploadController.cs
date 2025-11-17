@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using cloud.DTO.Responses.Files;
+﻿using cloud.DTO.Responses.Files;
+using cloud.Middlewares.Extentions;
 using cloud.Services.Files;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ namespace cloud.Controllers.Files {
 
         [HttpPost]
         public async Task<ActionResult<List<FileResponse>>> UploadFiles(IFormFileCollection files) {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            string userId = User.GetId()!;
 
             var response = await service.UploadFilesAsync(userId, files);
             return Ok(response);

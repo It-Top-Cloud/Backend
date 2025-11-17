@@ -50,7 +50,7 @@ namespace cloud.Services.Files {
                 var fileRecord = new Models.File {
                     user_id = Guid.Parse(userId),
                     name = Path.GetFileName(file.FileName),
-                    extension = Path.GetExtension(file.FileName),
+                    extention = Path.GetExtension(file.FileName),
                     path = Path.GetDirectoryName(file.FileName),
                     bytes = file.Length,
                 };

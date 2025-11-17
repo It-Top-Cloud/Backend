@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using cloud.DTO.Requests.Files;
+﻿using cloud.DTO.Requests.Files;
+using cloud.Middlewares.Extentions;
 using cloud.Services.Files;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +15,9 @@ namespace cloud.Controllers.Files {
             this.service = service;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<FileStreamResult> DownloadFile(DownloadFileRequest request) {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            string userId = User.GetId()!;
 
             var stream = await service.GetFileStream(userId, request);
 

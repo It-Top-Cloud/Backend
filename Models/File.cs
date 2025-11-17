@@ -21,7 +21,7 @@ namespace cloud.Models {
 
 
         [Column(TypeName = "nvarchar(50)")]
-        public string? extension { get; set; }
+        public string? extention { get; set; }
 
 
         [Column(TypeName = "nvarchar(255)")]

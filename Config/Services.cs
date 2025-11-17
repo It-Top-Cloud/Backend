@@ -4,7 +4,6 @@ using cloud.Services.Auth.Register;
 using cloud.Services.Files;
 using cloud.Services.Files.FileWorkers.Browser;
 using cloud.Services.Files.FileWorkers.Uploader;
-using cloud.Services.JWT;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -13,10 +12,10 @@ namespace cloud.Config {
         public static WebApplicationBuilder AppRegisterServices(this WebApplicationBuilder builder) {
             builder.Services.AddHttpClient();
             builder.Services.Configure<FormOptions>(options =>
-                options.MultipartBodyLengthLimit = 30L * (1L << 30)
+                options.MultipartBodyLengthLimit = 30L * Constants.OneGbBytes
             );
             builder.Services.Configure<KestrelServerOptions>(options =>
-                options.Limits.MaxRequestBodySize = 30L * (1L << 30)
+                options.Limits.MaxRequestBodySize = 30L * Constants.OneGbBytes
             );
             builder.Services.AddSingleton<WebSocketService>();
 
