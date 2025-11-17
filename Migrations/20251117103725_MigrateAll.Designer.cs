@@ -12,7 +12,7 @@ using cloud.Data;
 namespace cloud.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251110185420_MigrateAll")]
+    [Migration("20251117103725_MigrateAll")]
     partial class MigrateAll
     {
         /// <inheritdoc />
@@ -98,10 +98,6 @@ namespace cloud.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("fname")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
@@ -130,9 +126,6 @@ namespace cloud.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("id");
-
-                    b.HasIndex("email")
-                        .IsUnique();
 
                     b.HasIndex("phone")
                         .IsUnique();

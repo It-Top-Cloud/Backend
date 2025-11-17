@@ -55,7 +55,6 @@ namespace cloud.Migrations
                     fname = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     sname = table.Column<string>(type: "nvarchar(30)", nullable: true),
                     lname = table.Column<string>(type: "nvarchar(30)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     phone = table.Column<string>(type: "varchar(11)", nullable: false),
                     password = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     role = table.Column<int>(type: "int", nullable: false),
@@ -66,12 +65,6 @@ namespace cloud.Migrations
                 {
                     table.PrimaryKey("PK_users", x => x.id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_users_email",
-                table: "users",
-                column: "email",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_users_phone",

@@ -8,7 +8,8 @@ namespace cloud.Config {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             try {
-                if (!context.Database.CanConnect()) {
+                var pendingMigrations = context.Database.GetPendingMigrations();
+                if (pendingMigrations.Any()) {
                     context.Database.Migrate();
                 }
             } catch (Exception ex) {

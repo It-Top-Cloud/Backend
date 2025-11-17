@@ -95,10 +95,6 @@ namespace cloud.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("fname")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
@@ -127,9 +123,6 @@ namespace cloud.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("id");
-
-                    b.HasIndex("email")
-                        .IsUnique();
 
                     b.HasIndex("phone")
                         .IsUnique();

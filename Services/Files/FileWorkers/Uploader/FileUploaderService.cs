@@ -1,14 +1,6 @@
 ﻿namespace cloud.Services.Files.FileWorkers.Uploader {
-    public class FileUploaderService : IFileUploaderService {
-        public string FileDir { get; set; }
-
-        public FileUploaderService(IWebHostEnvironment env, IConfiguration configuration) {
-            if (env.IsProduction()) {
-                this.FileDir = Path.Combine(configuration["StorageDir"]!, "files");
-            } else {
-                this.FileDir = Path.Combine(Directory.GetCurrentDirectory(), "Storage", "Files");
-            }
-        }
+    public class FileUploaderService : FileWorker, IFileUploaderService {
+        public FileUploaderService(IWebHostEnvironment env, IConfiguration configuration) : base(env, configuration) { }
 
         public bool FileExists(string userId, string fileName) {
             string userPath = Path.Combine(FileDir, userId);
@@ -16,9 +8,9 @@
 
             if (File.Exists(fullPath)) {
                 return true;
-            } else {
-                return false;
             }
+
+            return false;
         }
 
         public async Task StoreFileAsync(string userId, IFormFile file) {
