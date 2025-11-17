@@ -22,9 +22,9 @@ namespace cloud.Config {
                 connectionString = builder.Configuration["DefaultConnection"]!;
             }
 
-                builder.Services.AddDbContext<AppDbContext>(options =>
-                    options.UseSqlServer(connectionString)
-                );
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(connectionString)
+            );
 
             return builder;
         }

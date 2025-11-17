@@ -106,12 +106,12 @@ namespace cloud.Services.Files {
             if (Path.IsPathRooted(fileName) || fileName.Contains("..") || fileName.Contains("\\")) {
                 return false;
             }
-            
+
             var invalidChars = Path.GetInvalidFileNameChars().Except(['/']);
             if (fileName.Any(c => invalidChars.Contains(c))) {
                 return false;
             }
-            
+
             if (fileName.Length > 255) {
                 return false;
             }

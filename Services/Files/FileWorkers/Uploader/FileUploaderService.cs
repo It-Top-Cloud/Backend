@@ -22,14 +22,7 @@
         }
 
         public async Task StoreFileAsync(string userId, IFormFile file) {
-            string userPath = Path.Combine(FileDir, userId);
-            Directory.CreateDirectory(userPath);
-
-            string fullPath = Path.Combine(userPath, file.FileName);
-            string? directoryPath = Path.GetDirectoryName(fullPath);
-            if (!string.IsNullOrWhiteSpace(directoryPath)) {
-                Directory.CreateDirectory(directoryPath);
-            }
+            string fullPath = GetFinalFilePath(userId, file.FileName);
 
             using FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.Write);
 
@@ -37,6 +30,12 @@
         }
 
         public async Task RemoveFileAsync(string userId, string fileName) {
+            string fullPath = GetFinalFilePath(userId, fileName);
+
+            await Task.Run(() => File.Delete(fullPath));
+        }
+
+        private string GetFinalFilePath(string userId, string fileName) {
             string userPath = Path.Combine(FileDir, userId);
             Directory.CreateDirectory(userPath);
 
@@ -46,7 +45,7 @@
                 Directory.CreateDirectory(directoryPath);
             }
 
-            await Task.Run(() => File.Delete(fullPath));
+            return fullPath;
         }
     }
 }
