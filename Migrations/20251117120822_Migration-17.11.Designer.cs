@@ -12,8 +12,8 @@ using cloud.Data;
 namespace cloud.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251017205242_Migrate")]
-    partial class Migrate
+    [Migration("20251117120822_Migration-17.11")]
+    partial class Migration1711
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,45 @@ namespace cloud.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("cloud.Models.File", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("binned_at")
+                        .HasColumnType("datetime");
+
+                    b.Property<long>("bytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("extention")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("path")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("updated_at")
+                        .HasColumnType("datetime");
+
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("сreated_at")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Files");
+                });
 
             modelBuilder.Entity("cloud.Models.PhoneVerification", b =>
                 {
@@ -59,10 +98,6 @@ namespace cloud.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("fname")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
@@ -91,9 +126,6 @@ namespace cloud.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("id");
-
-                    b.HasIndex("email")
-                        .IsUnique();
 
                     b.HasIndex("phone")
                         .IsUnique();

@@ -6,11 +6,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace cloud.Migrations
 {
     /// <inheritdoc />
-    public partial class Migrate : Migration
+    public partial class MigrateAll : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    extension = table.Column<string>(type: "nvarchar(50)", nullable: true),
+                    path = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    bytes = table.Column<long>(type: "bigint", nullable: false),
+                    status = table.Column<int>(type: "int", nullable: false),
+                    binned_at = table.Column<DateTime>(type: "datetime", nullable: true),
+                    сreated_at = table.Column<DateTime>(type: "datetime", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "phone_verifications",
                 columns: table => new
@@ -35,7 +55,6 @@ namespace cloud.Migrations
                     fname = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     sname = table.Column<string>(type: "nvarchar(30)", nullable: true),
                     lname = table.Column<string>(type: "nvarchar(30)", nullable: true),
-                    email = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     phone = table.Column<string>(type: "varchar(11)", nullable: false),
                     password = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     role = table.Column<int>(type: "int", nullable: false),
@@ -48,12 +67,6 @@ namespace cloud.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_email",
-                table: "users",
-                column: "email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_users_phone",
                 table: "users",
                 column: "phone",
@@ -63,6 +76,9 @@ namespace cloud.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Files");
+
             migrationBuilder.DropTable(
                 name: "phone_verifications");
 

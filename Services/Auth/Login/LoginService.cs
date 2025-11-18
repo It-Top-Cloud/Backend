@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
-using Crypto = BCrypt.Net.BCrypt;
-
 using cloud.DTO.Requests.Auth;
 using cloud.DTO.Responses.Auth;
-using cloud.Repositories.Auth;
-using cloud.Services.JWT;
 using cloud.Exceptions;
+using cloud.Repositories.Users;
+using cloud.Services.JWT;
+using Crypto = BCrypt.Net.BCrypt;
 
 namespace cloud.Services.Auth.Login {
     public class LoginService : ILoginService {
-        private readonly IAuthRepository repository;
+        private readonly IUserRepository repository;
         private readonly IMapper mapper;
         private readonly IJWTService jwt;
 
-        public LoginService(IAuthRepository repository, IMapper mapper, IJWTService jwt) {
+        public LoginService(IUserRepository repository, IMapper mapper, IJWTService jwt) {
             this.repository = repository;
             this.mapper = mapper;
             this.jwt = jwt;

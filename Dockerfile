@@ -26,4 +26,7 @@ RUN dotnet publish "./cloud.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:U
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/storage/files && \
+    chown -R app:app /app/storage && \
+    chmod -R 755 /app/storage
 ENTRYPOINT ["dotnet", "cloud.dll"]
