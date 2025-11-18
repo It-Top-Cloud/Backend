@@ -1,5 +1,6 @@
 ﻿using cloud.Repositories.Auth;
 using cloud.Repositories.Files;
+using cloud.Repositories.Users;
 using cloud.Repositories.Verify;
 
 namespace cloud.Config {
@@ -8,6 +9,7 @@ namespace cloud.Config {
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IVerificationRepository, VerificationRepository>();
 
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IFileRepository, FileRepository>();
 
             return builder;
