@@ -3,18 +3,21 @@ using cloud.DTO.Requests.Files;
 using cloud.DTO.Responses.Files;
 using cloud.Exceptions;
 using cloud.Repositories.Files;
+using cloud.Repositories.Users;
 using cloud.Services.Files.FileWorkers.Browser;
 using cloud.Services.Files.FileWorkers.Uploader;
 
 namespace cloud.Services.Files {
     public class FileService : IFileService {
         private readonly IFileRepository repository;
+        private readonly IUserRepository userRepository;
         private readonly IFileUploaderService uploader;
         private readonly IFileBrowserService browser;
         private readonly IMapper mapper;
 
-        public FileService(IFileRepository repository, IFileUploaderService uploader, IFileBrowserService browser, IMapper mapper) {
+        public FileService(IFileRepository repository, IUserRepository userRepository, IFileUploaderService uploader, IFileBrowserService browser, IMapper mapper) {
             this.repository = repository;
+            this.userRepository = userRepository;
             this.uploader = uploader;
             this.browser = browser;
             this.mapper = mapper;
@@ -26,7 +29,8 @@ namespace cloud.Services.Files {
         }
 
         public async Task<List<FileResponse>> UploadFilesAsync(string userId, IFormFileCollection files) {
-            if (repository.HasStorageLimit(userId, out long available)) {
+            var user = await userRepository.GetUserByIdAsync(userId);
+            if (userRepository.HasStorageLimit(user!, out long available)) {
                 long uploadSize = 0;
                 foreach (var file in files) {
                     uploadSize += file.Length;

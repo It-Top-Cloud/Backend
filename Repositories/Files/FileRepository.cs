@@ -1,17 +1,12 @@
-﻿using cloud.Config;
-using cloud.Data;
-using cloud.Enums;
-using cloud.Models;
+﻿using cloud.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace cloud.Repositories.Files {
     public class FileRepository : IFileRepository {
         private readonly AppDbContext context;
-        private readonly IConfiguration configuration;
 
-        public FileRepository(AppDbContext context, IConfiguration configuration) {
+        public FileRepository(AppDbContext context) {
             this.context = context;
-            this.configuration = configuration;
         }
 
         public async Task<List<Models.File>> GetUserFilesAsync(string userId) {
@@ -20,28 +15,6 @@ namespace cloud.Repositories.Files {
 
         public async Task<Models.File?> GetFileByIdAsync(string id) {
             return await context.Files.FirstOrDefaultAsync(f => f.id == Guid.Parse(id));
-        }
-
-        public bool HasStorageLimit(string userId, out long available) {
-            available = -1L;
-
-            var user = context.Users.FirstOrDefault(u => u.id == Guid.Parse(userId))!;
-            if (HasPermission(user, RolesEnum.Unlimited)) {
-                return false;
-            }
-
-            string freeGb = configuration["FreeStorageLimitGB"]!;
-
-            long.TryParse(freeGb, out long free);
-            available = free * Constants.OneGbBytes;
-
-            var usedSpace = context.Files
-                .Where(f => f.user_id == user.id)
-                .Select(f => f.bytes)
-                .Sum();
-
-            available -= usedSpace;
-            return true;
         }
 
         public async Task<Models.File> CreateFileAsync(Models.File file) {
@@ -53,15 +26,6 @@ namespace cloud.Repositories.Files {
         public async Task RemoveFileAsync(Models.File file) {
             context.Files.Remove(file);
             await context.SaveChangesAsync();
-        }
-
-        private bool HasPermission(User user, RolesEnum role) {
-            int intFlag = (int)role;
-            if ((user.role & intFlag) != intFlag) {
-                return false;
-            }
-
-            return true;
         }
     }
 }
