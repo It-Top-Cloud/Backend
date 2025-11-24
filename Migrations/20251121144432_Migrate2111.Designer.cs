@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cloud.Data;
 
@@ -11,9 +12,11 @@ using cloud.Data;
 namespace cloud.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251121144432_Migrate2111")]
+    partial class Migrate2111
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace cloud.Migrations
 
                     b.HasIndex("SharedFileid");
 
-                    b.ToTable("FileSharedFile", (string)null);
+                    b.ToTable("FileSharedFile");
                 });
 
             modelBuilder.Entity("cloud.Models.File", b =>
@@ -73,7 +76,7 @@ namespace cloud.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("cloud.Models.PhoneVerification", b =>

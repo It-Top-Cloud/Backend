@@ -8,6 +8,7 @@ namespace cloud.Data {
         public DbSet<User> Users { get; set; }
         public DbSet<PhoneVerification> PhoneVerifications { get; set; }
         public DbSet<Models.File> Files { get; set; }
+        public DbSet<SharedFile> SharedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -20,6 +21,12 @@ namespace cloud.Data {
                 .ToTable("users")
                 .HasIndex(u => u.phone)
                 .IsUnique()
+            ;
+
+            modelBuilder.Entity<SharedFile>()
+                .ToTable("shared_files")
+                .HasMany<Models.File>()
+                .WithMany()
             ;
         }
     }
