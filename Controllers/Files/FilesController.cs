@@ -17,7 +17,7 @@ namespace cloud.Controllers.Files {
             this.service = service;
         }
 
-        [HttpGet("/my")] // Все мои файлы
+        [HttpGet("my")] // Все мои файлы
         public async Task<ActionResult<List<FileResponse>>> GetFiles() {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             Console.WriteLine(userId);
@@ -26,7 +26,7 @@ namespace cloud.Controllers.Files {
             return Ok(files);
         }
 
-        [HttpGet("/shared")] // Все файлы, которые мне дали
+        [HttpGet("shared")] // Все файлы, которые мне дали
         public async Task<ActionResult<List<SharedFileResponse>>> GetWithFiles() {
             string userId = User.GetId()!;
 
@@ -34,7 +34,7 @@ namespace cloud.Controllers.Files {
             return Ok(files);
         }
 
-        [HttpGet("/shared/my")] // Все файлы, которые я дал
+        [HttpGet("shared/my")] // Все файлы, которые я дал
         public async Task<ActionResult<List<SharedFileResponse>>> GetFromFiles() {
             string userId = User.GetId()!;
 
