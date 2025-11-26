@@ -1,6 +1,6 @@
 .env
-/.vs
-/bin
-/obj
+.vs/
+bin/
+obj/
 *.tmp
 *.user
