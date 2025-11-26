@@ -2,9 +2,10 @@
 using cloud.DTO.Responses.Files;
 
 namespace cloud.Profiles {
-    public class FileProfile : Profile{
+    public class FileProfile : Profile {
         public FileProfile() {
             CreateMap<Models.File, FileResponse>();
+            CreateMap<Models.File, SharedFileResponse>();
         }
     }
 }

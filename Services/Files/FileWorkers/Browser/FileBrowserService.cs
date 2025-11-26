@@ -14,5 +14,9 @@
 
             return File.OpenRead(fullPath);
         }
+
+        public string GetFilePath(Models.File file) {
+            return string.IsNullOrWhiteSpace(file.path) ? file.name : Path.Combine(file.path, file.name);
+        }
     }
 }

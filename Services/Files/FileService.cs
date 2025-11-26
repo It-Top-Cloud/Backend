@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using cloud.DTO.Requests.Files;
 using cloud.DTO.Responses.Files;
+using cloud.Enums;
 using cloud.Exceptions;
+using cloud.Models;
 using cloud.Repositories.Files;
 using cloud.Repositories.Users;
 using cloud.Services.Files.FileWorkers.Browser;
@@ -26,6 +28,21 @@ namespace cloud.Services.Files {
         public async Task<List<FileResponse>> GetUserFilesAsync(string userId) {
             var files = await repository.GetUserFilesAsync(userId);
             return mapper.Map<List<FileResponse>>(files);
+        }
+
+        public async Task<FileResponse> GetFileByIdAsync(string requesterId, string id) {
+            var file = await ValidateSharedAccessAsync(requesterId, id);
+            return mapper.Map<FileResponse>(file);
+        }
+
+        public async Task<List<SharedFileResponse>> GetFromSharedFilesAsync(string userId) {
+            var sharedFiles = await repository.GetFromSharedFilesAsync(userId);
+            return await PopulateSharedFileResponsesAsync(sharedFiles);
+        }
+
+        public async Task<List<SharedFileResponse>> GetWithSharedFilesAsync(string userId) {
+            var sharedFiles = await repository.GetWithSharedFilesAsync(userId);
+            return await PopulateSharedFileResponsesAsync(sharedFiles);
         }
 
         public async Task<List<FileResponse>> UploadFilesAsync(string userId, IFormFileCollection files) {
@@ -66,7 +83,12 @@ namespace cloud.Services.Files {
             return result;
         }
 
-        public async Task<FileStream> GetFileStream(string userId, DownloadFileRequest request) {
+        public async Task<FileStream> GetFileStream(string userId, UriFileRequest request) {
+            var file = await ValidateSharedAccessAsync(userId, request.id);
+            return browser.GetFileStream(userId, file);
+        }
+
+        public async Task<SharedFileResponse> ShareFileAsync(string userId, ShareFileRequest request) {
             var file = await repository.GetFileByIdAsync(request.id);
             if (file == null) {
                 throw new NotFoundException("Файл не найден");
@@ -75,19 +97,27 @@ namespace cloud.Services.Files {
             if (file.user_id != Guid.Parse(userId)) {
                 throw new AccessDeniedException("Доступ запрещен");
             }
-            /*
-             * изменить проверку в будущем
-             * у файлов будет возможность их разшаривать
-             * или сделать файл публичным
-             * 
-             * TODO: установить значение status у объекта File
-             * на Enum - FileAccessibilityEnum
-            */
 
-            return browser.GetFileStream(userId, file);
+            var existing = await repository.GetExistingShareAsync(request.user_id, request.id);
+            if (existing != null) {
+                throw new InvalidActionException("Этот пользователь уже имеет доступ к этому файлу");
+            }
+
+            var shared = await repository.ShareFileAsync(new SharedFile {
+                file_id = Guid.Parse(request.id),
+                user_id = Guid.Parse(request.user_id)
+            });
+
+            var response = mapper.Map<SharedFileResponse>(file);
+            response.receiver_id = shared.user_id;
+            return response;
         }
 
-        public async Task RemoveFileAsync(string userId, RemoveFileRequest request) {
+        public async Task RemoveShareAsync(string userId, ShareFileRequest request) {
+
+        }
+
+        public async Task RemoveFileAsync(string userId, UriFileRequest request) {
             var file = await repository.GetFileByIdAsync(request.id);
             if (file == null) {
                 throw new NotFoundException("Файл не найден");
@@ -98,8 +128,49 @@ namespace cloud.Services.Files {
             }
 
             await repository.RemoveFileAsync(file);
-            string path = string.IsNullOrWhiteSpace(file.path) ? file.name : Path.Combine(file.path, file.name);
+            string path = browser.GetFilePath(file);
             await uploader.RemoveFileAsync(userId, path);
+        }
+
+        private async Task<Models.File> ValidateSharedAccessAsync(string requesterId, string fileId) {
+            var userId = Guid.Parse(requesterId);
+            var file = await repository.GetFileByIdAsync(fileId);
+            if (file == null) {
+                throw new NotFoundException("Файл не найден");
+            }
+
+            var user = await userRepository.GetUserByIdAsync(requesterId);
+            if (userRepository.HasPermissions(user!, RolesEnum.Admin)) return file;
+
+            if (file.user_id == userId) return file;
+
+            /*
+             * TODO: установить значение status у объекта File
+             * на Enum - FileAccessibilityEnum
+             * и делать проверку на доступ по ссылке
+            */
+
+            var sharedFiles = await repository.GetWithSharedFilesAsync(requesterId);
+            if (sharedFiles.FirstOrDefault(f =>
+                f.file_id == file.id &&
+                f.user_id == userId) == null) {
+                throw new AccessDeniedException("Этот файл вам недоступен");
+            }
+
+            return file;
+        }
+
+        private async Task<List<SharedFileResponse>> PopulateSharedFileResponsesAsync(List<SharedFile> sharedFiles) {
+            var fileIds = sharedFiles.Select(sf => sf.file_id.ToString()).ToList();
+
+            var fileInfoTasks = fileIds.Select(id => repository.GetFileByIdAsync(id));
+            var fileInfos = await Task.WhenAll(fileInfoTasks);
+
+            return fileInfos.Zip(sharedFiles, (fileInfo, sharedFile) => {
+                var response = mapper.Map<SharedFileResponse>(fileInfo);
+                response.receiver_id = sharedFile.user_id;
+                return response;
+            }).ToList();
         }
 
         private bool ValidateFileName(string fileName) {
