@@ -1,15 +1,12 @@
-﻿using System.Net.Http.Json;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
-
+using System.Net.Http.Json;
 using httpclient_module.DTO.Request.Auth;
 using httpclient_module.DTO.Responses.Auth;
 using httpclient_module.DTO.Responses.Files;
 
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-
 namespace httpclient_module;
-    
+
 public static class Client {
     public static string host = $"https://cloud.rotatick.ru";
     private static HttpClient client = new HttpClient();
@@ -27,13 +24,13 @@ public static class Client {
         content.EnsureSuccessStatusCode(); // заменить на кастомный хендлер ошибок
 
         var response = await content.Content.ReadFromJsonAsync<LoginResponse>();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(response.token);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.token);
 
         return response!;
     }
 
     public static async Task<List<FileResponse>> GetAllFilesAsync() {
-        if (await JwtExpired()) {
+        if (JwtExpired()) {
             await LoginAsync();
         }
 
@@ -43,21 +40,13 @@ public static class Client {
         return await content.Content.ReadFromJsonAsync<List<FileResponse>>();
     }
 
-    private static async Task<bool> JwtExpired() {
-        var authHeader = client.DefaultRequestHeaders.Authorization!;
-        var validateParams = new TokenValidationParameters {
-            ValidateLifetime = true,
-            ValidateAudience = false,
-            ValidateIssuer = false,
-            ValidateIssuerSigningKey = false
-        };
-        
+    private static bool JwtExpired() {
         try {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var token = authHeader.Parameter;
+            var token = client.DefaultRequestHeaders.Authorization!.Parameter;
 
-            var result = await tokenHandler.ValidateTokenAsync(token, validateParams);
-            return !result.IsValid;
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            return jwtToken.ValidTo < DateTime.UtcNow;
         } catch {
             return true;
         }
